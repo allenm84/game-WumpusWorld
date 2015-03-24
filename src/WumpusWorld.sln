@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WumpusWorld", "WumpusWorld\WumpusWorld.csproj", "{C2A3E940-F626-4433-93B5-F5B8D2325D09}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WumpusWorld", "WumpusWorld\WumpusWorld.csproj", "{6B32D02E-F35B-4348-8436-7591AC960E3D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C2A3E940-F626-4433-93B5-F5B8D2325D09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C2A3E940-F626-4433-93B5-F5B8D2325D09}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C2A3E940-F626-4433-93B5-F5B8D2325D09}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C2A3E940-F626-4433-93B5-F5B8D2325D09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B32D02E-F35B-4348-8436-7591AC960E3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B32D02E-F35B-4348-8436-7591AC960E3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B32D02E-F35B-4348-8436-7591AC960E3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B32D02E-F35B-4348-8436-7591AC960E3D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
