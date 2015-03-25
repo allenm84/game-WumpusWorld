@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 
 namespace WumpusWorld
 {
-  public enum AgentDirection
+  public enum Orientation
   {
-    North,
-    South,
-    West,
-    East,
+    left, up, right, down,
   }
 }

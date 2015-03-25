@@ -4,9 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WumpusWorld
+namespace System.Windows.Forms
 {
-  public class Cave
+  public class PanelEx : Panel
   {
+    public PanelEx()
+    {
+      DoubleBuffered = true;
+    }
   }
 }
