@@ -39,13 +39,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ArrayExtensions.cs" />
-    <Compile Include="Node.cs" />
-    <Compile Include="Orientation.cs" />
-    <Compile Include="Percept.cs" />
-    <Compile Include="Pos.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Action.cs" />
+    <Compile Include="ActionQuery.cs" />
     <Compile Include="Agent.cs" />
+    <Compile Include="Arrow.cs" />
+    <Compile Include="Cave.cs" />
+    <Compile Include="CaveCell.cs" />
+    <Compile Include="CaveCellType.cs" />
+    <Compile Include="IAgentWorld.cs" />
+    <Compile Include="Index.cs" />
+    <Compile Include="Knowledge.cs" />
+    <Compile Include="KnowledgeBase.cs" />
+    <Compile Include="KnowledgeType.cs" />
+    <Compile Include="Orientation.cs" />
+    <Compile Include="Path\Dijkstra.cs" />
+    <Compile Include="Path\DijkstraNode.cs" />
+    <Compile Include="Percept.cs" />
+    <Compile Include="PerceptSentence.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Rules\KnowledgeRule.cs" />
+    <Compile Include="Rules\PitRule.cs" />
+    <Compile Include="Rules\WumpusRule.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

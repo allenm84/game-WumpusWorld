@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -26,7 +26,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -45,7 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GraphicsExtensions.cs" />
-    <Compile Include="GridCell.cs" />
+    <Compile Include="Keyboard.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -68,6 +68,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -84,6 +85,27 @@
       <Project>{6b32d02e-f35b-4348-8436-7591ac960e3d}</Project>
       <Name>WumpusWorld</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Breeze.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DeadWumpus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Gold.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Pit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Stench.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Wumpus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Agent.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

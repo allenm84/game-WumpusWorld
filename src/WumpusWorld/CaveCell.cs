@@ -4,18 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WumpusWorld.WinForms
+namespace WumpusWorld
 {
-  public class GridCell
+  public class CaveCell
   {
     public int Row { get; private set; }
     public int Column { get; private set; }
 
-    public bool Pit { get; set; }
-    public bool Wumpus { get; set; }
-    public bool Gold { get; set; }
+    public CaveCellType Type { get; set; }
+    public bool Revealed { get; set; }
+    public bool ContainsStench { get; set; }
+    public bool ContainsBreeze { get; set; }
 
-    public GridCell(int r, int c)
+    public CaveCell(int r, int c)
     {
       Row = r;
       Column = c;

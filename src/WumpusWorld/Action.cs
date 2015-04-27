@@ -5,11 +5,13 @@ using System.Text;
 
 namespace WumpusWorld
 {
-  public enum Orientation
+  public enum Action
   {
-    Down,
-    Left,
-    Up,
-    Right,
+    TurnLeft,
+    TurnRight,
+    MoveForward,
+    Grab,
+    Shoot,
+    Climb,
   }
 }

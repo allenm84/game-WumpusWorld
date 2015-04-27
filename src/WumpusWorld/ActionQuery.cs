@@ -5,11 +5,9 @@ using System.Text;
 
 namespace WumpusWorld
 {
-  public enum Orientation
+  public class ActionQuery
   {
-    Down,
-    Left,
-    Up,
-    Right,
+    public Agent Agent { get; set; }
+    public int Time { get; set; }
   }
 }

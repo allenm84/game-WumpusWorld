@@ -31,7 +31,7 @@
       this.components = new System.ComponentModel.Container();
       this.timerUpdate = new System.Windows.Forms.Timer(this.components);
       this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-      this.button1 = new System.Windows.Forms.Button();
+      this.btnUpdate = new System.Windows.Forms.Button();
       this.pnlScreen = new System.Windows.Forms.PanelEx();
       this.tableLayoutPanel1.SuspendLayout();
       this.SuspendLayout();
@@ -47,7 +47,7 @@
       this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
       this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
       this.tableLayoutPanel1.Controls.Add(this.pnlScreen, 0, 0);
-      this.tableLayoutPanel1.Controls.Add(this.button1, 0, 1);
+      this.tableLayoutPanel1.Controls.Add(this.btnUpdate, 0, 1);
       this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
       this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
       this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -57,16 +57,16 @@
       this.tableLayoutPanel1.Size = new System.Drawing.Size(460, 338);
       this.tableLayoutPanel1.TabIndex = 0;
       // 
-      // button1
+      // btnUpdate
       // 
-      this.button1.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.button1.Location = new System.Drawing.Point(192, 311);
-      this.button1.Name = "button1";
-      this.button1.Size = new System.Drawing.Size(75, 23);
-      this.button1.TabIndex = 1;
-      this.button1.Text = "button1";
-      this.button1.UseVisualStyleBackColor = true;
-      this.button1.Click += new System.EventHandler(this.button1_Click);
+      this.btnUpdate.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.btnUpdate.Location = new System.Drawing.Point(192, 311);
+      this.btnUpdate.Name = "btnUpdate";
+      this.btnUpdate.Size = new System.Drawing.Size(75, 23);
+      this.btnUpdate.TabIndex = 1;
+      this.btnUpdate.Text = "Run";
+      this.btnUpdate.UseVisualStyleBackColor = true;
+      this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click);
       // 
       // pnlScreen
       // 
@@ -85,6 +85,7 @@
       this.ClientSize = new System.Drawing.Size(460, 338);
       this.Controls.Add(this.tableLayoutPanel1);
       this.DoubleBuffered = true;
+      this.KeyPreview = true;
       this.Name = "MainForm";
       this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
       this.Text = "Form1";
@@ -98,7 +99,7 @@
     private System.Windows.Forms.Timer timerUpdate;
     private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
     private System.Windows.Forms.PanelEx pnlScreen;
-    private System.Windows.Forms.Button button1;
+    private System.Windows.Forms.Button btnUpdate;
   }
 }
 

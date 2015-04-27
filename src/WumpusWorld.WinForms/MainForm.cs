@@ -4,159 +4,198 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WumpusWorld.WinForms.Properties;
 
 namespace WumpusWorld.WinForms
 {
   public partial class MainForm : Form
   {
-    const int Count = 4;
+    const int Count = 16;
 
-    private GridCell[,] cells;
-    private Agent agent;
     private StringFormat center;
     private Font font;
+    private Cave cave;
+
+    private Image agentImage;
+    private Image stenchImage;
+    private Image breezeImage;
+
+    private Dictionary<Orientation, Rectangle> agentSourceRects;
+    private Dictionary<CaveCellType, Image> cellImages;
+    private Index lastValidLocation;
+    private bool forceReveal = false;
+    private bool isRunning = false;
+    private bool resetNeeded = false;
 
     public MainForm()
     {
       InitializeComponent();
       ClientSize = new Size(400, 300);
-      agent = new Agent();
+
+      cellImages = new Dictionary<CaveCellType, Image>();
+      cellImages[CaveCellType.DeadWumpus] = Resources.DeadWumpus;
+      cellImages[CaveCellType.Gold] = Resources.Gold;
+      cellImages[CaveCellType.Pit] = Resources.Pit;
+      cellImages[CaveCellType.Wumpus] = Resources.Wumpus;
+
+      agentImage = Resources.Agent;
+      stenchImage = Resources.Stench;
+      breezeImage = Resources.Breeze;
+
+      Size size = agentImage.Size;
+      int width = size.Width / 4;
+
+      agentSourceRects = new Dictionary<Orientation, Rectangle>();
+      agentSourceRects[Orientation.Down] = new Rectangle(width * 0, 0, width, size.Height);
+      agentSourceRects[Orientation.Left] = new Rectangle(width * 1, 0, width, size.Height);
+      agentSourceRects[Orientation.Up] = new Rectangle(width * 2, 0, width, size.Height);
+      agentSourceRects[Orientation.Right] = new Rectangle(width * 3, 0, width, size.Height);
+
       center = new StringFormat
       {
         Alignment = StringAlignment.Center,
         LineAlignment = StringAlignment.Center,
       };
       font = new System.Drawing.Font("Tahoma", 18f, FontStyle.Bold);
-      InitializeGrid();
-    }
 
-    private void InitializeGrid()
-    {
-      var random = new Random();
-      cells = new GridCell[Count, Count];
-
-      int r, c;
-      for (r = 0; r < Count; ++r)
-      {
-        for (c = 0; c < Count; ++c)
-        {
-          var cell = new GridCell(r, c);
-          cells[r, c] = cell;
-        }
-      }
-
-      int maxPits = (int)Math.Floor(((double)Count * Count) * 0.1);
-      int pits = random.Next(-maxPits / 2, maxPits + 1);
-      for (; pits > 0; --pits)
-      {
-        r = random.Next(1, Count);
-        c = random.Next(1, Count);
-        cells[r, c].Pit = true;
-      }
-
-      do
-      {
-        r = random.Next(1, Count);
-        c = random.Next(1, Count);
-      }
-      while (cells[r, c].Pit);
-      cells[r, c].Gold = true;
-
-      do
-      {
-        r = random.Next(1, Count);
-        c = random.Next(1, Count);
-      }
-      while (cells[r, c].Pit || cells[r, c].Gold);
-      cells[r, c].Wumpus = true;
-    }
-
-    private bool IsValidIndex(int r, int c)
-    {
-      return (-1 < r && r < Count) && (-1 < c && c < Count);
-    }
-
-    private IEnumerable<GridCell> GetNeighbors(GridCell cell)
-    {
-      int r, c;
-      r = cell.Row;
-      c = cell.Column;
-
-      var cands = new[]
-      {
-        new { r = r + 1, c = c },
-        new { r = r - 1, c = c },
-        new { r = r, c = c + 1 },
-        new { r = r, c = c - 1 },
-      };
-
-      return cands
-        .Where(b => IsValidIndex(b.r, b.c))
-        .Select(b => cells[b.r, b.c]);
+      cave = new Cave(Count);
     }
 
     private void RenderScene(Graphics g)
     {
-      float width = pnlScreen.ClientSize.Width - 1;
-      float height = pnlScreen.ClientSize.Height - 1;
+      forceReveal = Keyboard.IsKeyDown(Keys.Space);
 
-      float cellWidth = width / Count;
-      float cellHeight = height / Count;
+      g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+      g.SmoothingMode = SmoothingMode.AntiAlias;
+
+      RectangleF screen = pnlScreen.ClientRectangle;
+      screen.Width--;
+      screen.Height--;
+
+      RectangleF rect = new RectangleF(0, 0, screen.Width / Count, screen.Height / Count);
+      var arrows = new HashSet<Index>(cave.Arrows);
+
+      Index agent = cave.AgentPosition;
+      if (agent.IsValid(cave.Rows, cave.Columns))
+      {
+        lastValidLocation = agent;
+      }
+
+      Color tint = Color.WhiteSmoke;
+      float intensity = 0.25f;
+      ImageAttributes attributes = new ImageAttributes();
+      ColorMatrix m = new ColorMatrix(new float[][]
+      {
+        new float[] {1, 0, 0, 0, 0},
+        new float[] {0, 1, 0, 0, 0},
+        new float[] {0, 0, 1, 0, 0},
+        new float[] {0, 0, 0, 1, 0},
+        new float[] {tint.R / 255f * intensity, tint.G / 255f * intensity, tint.B / 255f * intensity, 0, 1}
+      });
+      attributes.SetColorMatrix(m);
 
       int r, c;
-      float x, y;
-
-      y = 0;
       for (r = 0; r < Count; ++r)
       {
-        x = 0;
+        rect.X = 0;
         for (c = 0; c < Count; ++c)
         {
-          var rect = new RectangleF(x, y, cellWidth, cellHeight);
-          g.FillRectangle(Brushes.WhiteSmoke, rect);
-          g.DrawRectangle(Pens.Black, rect);
+          var cell = cave[r, c];
 
-          var cell = cells[r, c];
-          if (cell.Gold)
-          {
-            g.DrawString("G", font, Brushes.Gold, rect, center);
-          }
-          if (cell.Pit)
-          {
-            g.DrawString("P", font, Brushes.Black, rect, center);
-          }
-          if (cell.Wumpus)
-          {
-            g.DrawString("W", font, Brushes.Red, rect, center);
-          }
+          var inflated = rect;
+          inflated.Inflate(-2, -2);
 
-          if (c == agent.X && r == agent.Y)
+          Color fill = cell.Revealed ? Color.SkyBlue : Color.LightGray;
+          FillSquare(g, fill, rect);
+
+          Image image;
+          if (cellImages.TryGetValue(cell.Type, out image))
           {
-            PointF p1 = new PointF(x + cellWidth * 0.5f, y + cellHeight * 0.5f);
-            PointF p2 = p1;
-            switch (agent.Orientation)
+            if(cell.Revealed)
             {
-              case Orientation.down: p2.Y = (y + cellHeight * 0.85f); break;
-              case Orientation.left: p2.X = x * 1.85f; break;
-              case Orientation.right: p2.X = (x + cellWidth * 0.85f); break;
-              case Orientation.up: p2.Y = y * 1.85f; break;
+              g.DrawImage(image, rect);
             }
-
-            using (var pen = new Pen(Color.SlateBlue, 8f))
+            else if (forceReveal)
             {
-              pen.SetLineCap(LineCap.Round, LineCap.ArrowAnchor, DashCap.Flat);
-              g.DrawLine(pen, p1, p2);
+              g.DrawImage(image, rect, attributes);
             }
           }
 
-          x += cellWidth;
+          if (cell.ContainsStench)
+          {
+            if (cell.Revealed)
+            {
+              g.DrawImage(stenchImage, inflated);
+            }
+            else if (forceReveal)
+            {
+              g.DrawImage(stenchImage, inflated, attributes);
+            }
+          }
+
+          if (cell.ContainsBreeze)
+          {
+            if (cell.Revealed)
+            {
+              g.DrawImage(breezeImage, inflated);
+            }
+            else if (forceReveal)
+            {
+              g.DrawImage(breezeImage, inflated, attributes);
+            }
+          }
+
+          if (lastValidLocation.Equals(r, c))
+          {
+            g.DrawImage(agentImage, inflated, agentSourceRects[cave.AgentOrientation], GraphicsUnit.Pixel);
+          }
+
+          Index index = new Index(c, r);
+          if (arrows.Contains(index))
+          {
+            g.DrawString(">", font, Brushes.Goldenrod, rect, center);
+          }
+
+          rect.X += rect.Width;
         }
-        y += cellHeight;
+        rect.Y += rect.Height;
       }
+    }
+
+    private void FillSquare(Graphics g, Color color, RectangleF rect)
+    {
+      using (var b = new SolidBrush(color))
+      {
+        g.FillRectangle(b, rect);
+      }
+      using (var p = new Pen(Color.Black, 2f))
+      {
+        g.DrawRectangle(p, rect);
+      }
+    }
+
+    protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+    {
+      if (keyData == Keys.Space)
+      {
+        return true;
+      }
+      return base.ProcessCmdKey(ref msg, keyData);
+    }
+
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+      if (e.KeyCode == Keys.Space)
+      {
+        e.SuppressKeyPress = true;
+        e.Handled = true;
+      }
+      base.OnKeyDown(e);
     }
 
     private void pnlScreen_Paint(object sender, PaintEventArgs e)
@@ -166,37 +205,28 @@ namespace WumpusWorld.WinForms
 
     private void timerUpdate_Tick(object sender, EventArgs e)
     {
+      if (isRunning)
+      {
+        cave.Update();
+        if (!cave.AgentAlive || cave.AgentEscaped)
+        {
+          isRunning = false;
+          resetNeeded = true;
+          btnUpdate.Enabled = true;
+        }
+      }
       pnlScreen.Invalidate();
     }
 
-    private void button1_Click(object sender, EventArgs e)
+    private void btnUpdate_Click(object sender, EventArgs e)
     {
-      int r, c;
-      r = agent.Y;
-      c = agent.X;
-
-      if (IsValidIndex(r, c))
+      if (resetNeeded)
       {
-        Percept p = Percept.none;
-        var cell = cells[r, c];
-        if (cell.Gold)
-          p |= Percept.glitter;
-
-        var neighbors = GetNeighbors(cell);
-        if (neighbors.Any(n => n.Pit))
-          p |= Percept.breeze;
-        if (neighbors.Any(n => n.Wumpus))
-          p |= Percept.stench;
-
-        var act = agent.update(p);
-        act();
-      }
-      else
-      {
-        agent.update(Percept.bump);
+        cave.Reset();
       }
 
-      pnlScreen.Invalidate();
+      isRunning = true;
+      btnUpdate.Enabled = false;
     }
   }
 }

@@ -5,11 +5,12 @@ using System.Text;
 
 namespace WumpusWorld
 {
-  public enum Orientation
+  public enum CaveCellType
   {
-    Down,
-    Left,
-    Up,
-    Right,
+    None,
+    Wumpus,
+    DeadWumpus,
+    Pit,
+    Gold,
   }
 }
